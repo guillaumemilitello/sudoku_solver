@@ -15,7 +15,7 @@
 
 using namespace std;
 
-const unsigned int p_search_l_max = 4;
+const unsigned int p_l_max = 4;
 
 struct sudoku_grid
 {
@@ -31,7 +31,6 @@ private:
 	sudoku_grid grid[9][9];
 	set<int> p_square[3][3];
 	set<int> p_line[2][9];
-	unsigned int p_search_l;
 
 public:
 	Sudoku();
@@ -40,15 +39,20 @@ public:
 
 	virtual ~Sudoku(){};
 
-	const void initGrid();
 	const void setGrid(const int v[9][9]);
+	const void getGrid(int v[9][9]) const;
+	const bool checkGrid() const;
 
 	const bool isSolved() const;
 	const bool isSolved(int x, int y) const;
-	const void itemSolved();
 
 	const int  getValue(int x, int y) const;
+
+private:
+	const void initGrid();
 	const void setValue(int x, int y, int v);
+
+	const void itemSolved();
 
 	const bool isPossibility(int x, int y, int v) const;
 	const int  getPossibility(int x, int y, unsigned int it) const;
@@ -67,14 +71,13 @@ public:
 	const void fillPossibilities();
 	const void fillSharedPossibilities();
 
-	const bool solve();
-	const bool recursiveSolve();
 	const bool solveValue(unsigned int p_nb, unsigned int p_it);
 
-	const bool checkGrid() const;
+	const bool recursiveSolve(unsigned int p_l);
 
 	friend ostream& operator<<(ostream& os, const Sudoku& su);
 
+	friend const bool sudokuSolve(Sudoku& su);
 };
 
 #endif /* SUDOKU_H_ */

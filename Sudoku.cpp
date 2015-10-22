@@ -7,17 +7,17 @@
 
 #include <Sudoku.h>
 
-Sudoku::Sudoku() : unsolved(0), p_search_l(1)
+Sudoku::Sudoku() : unsolved(0)
 {
 	initGrid();
 }
 
-Sudoku::Sudoku(int v[9][9]) : unsolved(0), p_search_l(1)
+Sudoku::Sudoku(int v[9][9]) : unsolved(0)
 {
 	setGrid(v);
 }
 
-Sudoku::Sudoku(Sudoku &other) : unsolved(other.unsolved), p_search_l(other.p_search_l)
+Sudoku::Sudoku(Sudoku &other) : unsolved(other.unsolved)
 {
 	for (int i = 0; i < 3; ++i)
 	{
@@ -69,6 +69,17 @@ const void Sudoku::setGrid(const int v[9][9])
 
 	// fill possibilities for each grid position
 	fillPossibilities();
+}
+
+const void Sudoku::getGrid(int v[9][9]) const
+{
+	for (int x = 0; x < 9; ++x)
+	{
+		for (int y = 0; y < 9; ++y)
+		{
+			 v[x][y] = getValue(x, y);
+		}
+	}
 }
 
 const bool Sudoku::isSolved() const
@@ -274,16 +285,19 @@ const void Sudoku::fillPossibilities()
 	}
 }
 
-const bool Sudoku::solve()
+const bool sudokuSolve(Sudoku& su)
 {
+	// first level of resolution
+	unsigned int p_l = 2;
+
 	// solve the gird by increasing the possibilities search limit
-	while(++p_search_l < p_search_l_max)
+	while(p_l <= p_l_max)
 	{
 		// use a recursive solving solution
-		if(recursiveSolve())
+		if(su.recursiveSolve(p_l++))
 		{
 			// final state error check, just in case
-			if(checkGrid())
+			if(su.checkGrid())
 			{
 				return true;
 			}
@@ -296,7 +310,7 @@ const bool Sudoku::solve()
 	}
 
 	// sudoku unsolved : error while finding solutions
-	if(!isSolved())
+	if(!su.isSolved())
 	{
 		cout << "sudoku unsolvable" << endl;
 		return false;
@@ -307,7 +321,7 @@ const bool Sudoku::solve()
 	}
 }
 
-const bool Sudoku::recursiveSolve()
+const bool Sudoku::recursiveSolve(unsigned int p_l)
 {
 	// sudoku solved
 	if(isSolved())
@@ -319,7 +333,7 @@ const bool Sudoku::recursiveSolve()
 		// solving unique value possibilities
 		// check is the whole gird still got possibilities
 		// run again the process untill the sudoku is solved
-		if(solveValue(1, 0) && !emptyPossibilities() && recursiveSolve())
+		if(solveValue(1, 0) && !emptyPossibilities() && recursiveSolve(p_l))
 		{
 			return true;
 		}
@@ -335,12 +349,12 @@ const bool Sudoku::recursiveSolve()
 			// save the context before taking different branches
 			Sudoku su_t = *this;
 
-			for(unsigned int l = 2; l <= p_search_l; ++l)
+			for(unsigned int l = 2; l <= p_l; ++l)
 			{
 				// iterator through the possibilities
 				for(unsigned int it=0; it<l; ++it)
 				{
-					if(su_t.solveValue(l, it) && !su_t.emptyPossibilities() && su_t.recursiveSolve())
+					if(su_t.solveValue(l, it) && !su_t.emptyPossibilities() && su_t.recursiveSolve(p_l))
 					{
 						// branch solution solved, returning the result
 						*this = su_t;
@@ -407,7 +421,7 @@ const bool Sudoku::checkGrid() const
 	{
 		for(int y=0; y<9; ++y)
 		{
-			int value = getValue(y, x);
+			int value = getValue(x, y);
 
 			if(value != 0)
 			{

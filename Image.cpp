@@ -39,7 +39,7 @@ Mat processInput(Mat img)
 	return img_adpth;
 }
 
-void transformSudoku(Mat img, Mat& img_tr, Rect& big_rect)
+void transformScrabble(Mat img, Mat& img_tr, Rect& big_rect)
 {
 	// pre-process the input image
 	Mat img_contours = processInput(img);

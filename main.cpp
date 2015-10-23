@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 	displayImage("Sudoku", img_src);
 
 	// get a clean transformed sudoku grid
-	transformSudoku(img_src, img_tr, sudoku_rect);
+	transformScrabble(img_src, img_tr, sudoku_rect);
 
 	// draw and show the sudoku grid on the input image
 	rectangle(img_src, sudoku_rect.tl(), sudoku_rect.br(), Scalar(0, 255, 0), 2);

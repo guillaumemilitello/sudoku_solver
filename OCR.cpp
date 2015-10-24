@@ -130,20 +130,9 @@ int getNumberOCR(Mat img, Ptr<KNearest> knn)
 	Mat img_color;
 	cvtColor(img, img_color, CV_GRAY2BGR);
 
-	// Apply the dilation operation
-	//dilate(processInput(img), img_p, getStructuringElement(MORPH_CROSS, Size(3, 3), Point(1, 1)));
-
 	// find the contours
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
-
-	// show big rectangle image
-//	namedWindow("Number", CV_WINDOW_KEEPRATIO);
-//	imshow("Number", img);
-
-	// wait infinite time for a key press
-//	waitKey(0);
-//	destroyWindow("Number");
 
 	// finding all the contours
 	findContours(img_contours, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
@@ -171,17 +160,6 @@ int getNumberOCR(Mat img, Ptr<KNearest> knn)
 
 			// find nearest
 			knn->findNearest(img_num.reshape(1, 1), 1, noArray(), response, distance);
-
-			// show big rectangle image
-			//cout << "rectangle height :" << rect.height << endl;
-//			rectangle(img_color, rect.tl(), rect.br(), Scalar(0, 255, 0), 2);
-//			namedWindow("Number to solve", CV_WINDOW_KEEPRATIO);
-//			imshow("Number to solve", img_color);
-//			waitKey(0);
-//			destroyWindow("Number to solve");
-
-			// display result
-//			cout << (int) response.at(0) << " distance : " << (int) distance.at(0) << endl;
 
 			// save the best result below a distance threshold
 			if(distance.at(0) < minimum_matching_dist && distance.at(0) < best_distance)
